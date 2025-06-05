@@ -1,0 +1,37 @@
+{
+  "name": "flurry",
+  "version": "1.0.0",
+  "description": "Homage to OSX flurry screensaver, written for the web using Threejs",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "publish": "npm run build && npx gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marclinder/flurry.git"
+  },
+  "keywords": [
+    "Screensavers",
+    "WebGL",
+    "Threejs"
+  ],
+  "author": "marclinder",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marclinder/flurry/issues"
+  },
+  "homepage": "https://github.com/marclinder/flurry#readme",
+  "dependencies": {
+    "stats.js": "^0.17.0",
+    "three": "^0.177.0"
+  },
+  "devDependencies": {
+    "@types/stats.js": "^0.17.4",
+    "@types/three": "^0.177.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}
