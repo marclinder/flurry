@@ -23,6 +23,7 @@ export class ThreeScene {
   constructor(private stats: Stats, private updateCallback: () => void) {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera.position.z = 5;
 
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -30,10 +31,6 @@ export class ThreeScene {
 
     document.body.appendChild(this.renderer.domElement);
     window.addEventListener('resize', this.onWindowResize.bind(this));
-
-    // helpers
-    this.createHelpers();
-    this.createTestGeom();
   }
 
   /**
@@ -42,7 +39,7 @@ export class ThreeScene {
    * @private
    * @memberof ThreeScene
    */
-  private createHelpers() {
+  public createHelpers() {
     const size = 10;
     const divisions = 10;
 
@@ -57,12 +54,11 @@ export class ThreeScene {
    * @private
    * @memberof ThreeScene
    */
-  private createTestGeom() {
+  public createTestGeom() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometry, material);
     this.scene.add(cube);
-    this.camera.position.z = 5;
   }
 
   /**
