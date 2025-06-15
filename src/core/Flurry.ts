@@ -24,7 +24,7 @@ export class Flurry {
     this.scene.createHelpers();
     // this.scene.createTestGeom();
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 1; i++) {
       this.particles.push(new Particle(this.scene.scene));
     }
   }

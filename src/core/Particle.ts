@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Sprite, Texture } from 'three';
 
 /**
  * Represents a single particle in the particle system.
@@ -6,68 +7,50 @@ import * as THREE from 'three';
  * @class Particle
  */
 export class Particle {
-
-  private history: THREE.Vector3[] = [];
-  private direction = new THREE.Vector3();
-  private theta = new THREE.Vector3();
-  private mesh: THREE.Line;
-  private speed = 0.02;
-  private maxHistory = 60;
-  private color: THREE.Color;
+  private static texture: Texture;
+  private sprite: Sprite<THREE.Object3DEventMap>;
 
   constructor(private scene: THREE.Scene) {
-    this.color = new THREE.Color().setHSL(Math.random(), 1.0, 0.5);
+    if (!Particle.texture)
+      Particle.texture = this.createParticleTexture();
 
-    // Initial position and random theta
-    const start = new THREE.Vector3(
-      Math.random() * 2 - 1,
-      Math.random() * 2 - 1,
-      Math.random() * 2 - 1
-    );
-    this.history.push(start.clone());
-
-    this.theta.set(
-      Math.random() * Math.PI * 2,
-      Math.random() * Math.PI * 2,
-      Math.random() * Math.PI * 2
-    );
-
-    // Line setup
-    const geometry = new THREE.BufferGeometry().setFromPoints(this.history);
-    const material = new THREE.LineBasicMaterial({
-      color: this.color,
-      transparent: true,
-      opacity: 0.3,
-      blending: THREE.AdditiveBlending,
-    });
-
-    this.mesh = new THREE.Line(geometry, material);
-    this.scene.add(this.mesh);
+    const spriteMaterial = new THREE.SpriteMaterial({ map: Particle.texture });
+    this.sprite = new THREE.Sprite(spriteMaterial);
+    this.scene.add(this.sprite);
   }
 
+  
   update(deltaTime: number) {
-    const lastPos = this.history[this.history.length - 1].clone();
 
-    // Update theta for smooth swirling motion
-    this.theta.x += 0.01 + Math.random() * 0.005;
-    this.theta.y += 0.012 + Math.random() * 0.005;
-    this.theta.z += 0.008 + Math.random() * 0.005;
+  }
 
-    const dir = new THREE.Vector3(
-      Math.sin(this.theta.x),
-      Math.sin(this.theta.y),
-      Math.sin(this.theta.z)
-    ).normalize();
+  /**
+   * Creates a texture for the particle with gradient fill.
+   *
+   * @private
+   * @return {*}  {Texture}
+   * @memberof Particle
+   */
+  private createParticleTexture(): Texture {
+    const radius = 50;
+    const size = radius * 4;
+    const center = size / 2;
 
-    const newPos = lastPos.clone().add(dir.multiplyScalar(this.speed));
-    this.history.push(newPos);
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
 
-    if (this.history.length > this.maxHistory) {
-      this.history.shift();
-    }
+    const ctx = canvas.getContext('2d')!;
 
-    this.mesh.geometry.dispose();
-    this.mesh.geometry = new THREE.BufferGeometry().setFromPoints(this.history);
+    // Create smooth radial gradient: center = opaque, edge = transparent
+    const gradient = ctx.createRadialGradient(center, center, 0, center, center, radius);
+    gradient.addColorStop(0.0, 'rgba(255, 255, 255, 1)');
+    gradient.addColorStop(1.0, 'rgba(255, 255, 255, 0)');
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size); // fill full canvas with gradient
+
+    return new THREE.CanvasTexture(canvas);
   }
 
 }
