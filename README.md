@@ -2,6 +2,10 @@
 
 A faithful recreation of the classic macOS "Flurry" screen saver using [Three.js](https://threejs.org/) and [Vite](https://vitejs.dev/). This project aims to replicate the original's smooth, swirling ribbon trails with modern WebGL, and includes optional interactivity and performance optimizations.
 
+## 🌐 Live Demo
+
+[https://marclinder.github.io/flurry](https://marclinder.github.io/flurry)
+
 ## Getting Started
 
 ### Prerequisites
