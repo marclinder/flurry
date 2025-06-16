@@ -14,13 +14,14 @@ export class ThreeScene {
   public scene: THREE.Scene;
   public camera: THREE.PerspectiveCamera;
   public renderer: THREE.WebGLRenderer;
+  public clock: THREE.Clock = new THREE.Clock();
 
   /**
    * Creates an instance of ThreeScene.
    * @param {Stats} stats
    * @memberof ParticleSystem
    */
-  constructor(private stats: Stats, private updateCallback: () => void) {
+  constructor(private updateCallback: () => void) {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 5;
@@ -67,7 +68,6 @@ export class ThreeScene {
    * @memberof ParticleSystem
    */
   public update() {
-    this.stats.begin();
     const cube = this.scene.children.find(child => child instanceof THREE.Mesh && (child as THREE.Mesh).geometry instanceof THREE.BoxGeometry) as THREE.Mesh;
     if (cube) {
       cube.rotation.x += 0.01;
@@ -75,7 +75,6 @@ export class ThreeScene {
     }
     this.renderer.render(this.scene, this.camera);
     this.updateCallback();
-    this.stats.end();
   }
 
 

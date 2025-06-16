@@ -1,8 +1,10 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { Star } from './Star';
 import { ThreeScene } from './ThreeScene';
-import { Particle } from './Particle';
-
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader';
+import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader';
 
 /**
  * Flurry class manages a system of particles, rendering them using PixiJS.
@@ -12,23 +14,32 @@ import { Particle } from './Particle';
  */
 export class Flurry {
   private scene: ThreeScene;
-  private particles: Particle[] = [];
+  private star: Star;
+  composer: any;
 
   /**
    * Creates an instance of Flurry.
    * @param {Stats} stats
    * @memberof ParticleSystem
    */
-  constructor(stats: Stats) {
-    this.scene = new ThreeScene(stats, this.update.bind(this));
+  constructor(private stats: Stats) {
+    this.scene = new ThreeScene(this.update.bind(this));
     this.scene.createHelpers();
-    // this.scene.createTestGeom();
+    this.star = new Star(this.scene.scene);
 
-    for (let i = 0; i < 1; i++) {
-      this.particles.push(new Particle(this.scene.scene));
-    }
+    this.composer = new EffectComposer(this.scene.renderer);
+    this.composer.addPass(new RenderPass(this.scene.scene, this.scene.camera));
+
+    const hblur = new ShaderPass(HorizontalBlurShader);
+    this.composer.addPass(hblur);
+    hblur.renderToScreen = true;
+
+    const vblur = new ShaderPass(VerticalBlurShader);
+    // set this shader pass to render to screen so we can see the effects
+    vblur.renderToScreen = true;
+    this.composer.addPass(vblur);
+    this.composer.addPass(new ShaderPass(VerticalBlurShader));
   }
-
 
   /**
    *  Updates the particle system.
@@ -36,12 +47,13 @@ export class Flurry {
    * @memberof ParticleSystem
    */
   private update() {
+    this.stats.begin();
     // Update logic for particles goes here
-    const clock = new THREE.Clock();
-    const delta = clock.getDelta();
+    const delta = this.scene.clock.getDelta();
+    this.composer.render();
 
-    this.particles.forEach(p => p.update(delta));
+    this.star.update(delta);
+    this.stats.end();
   }
-
 
 }

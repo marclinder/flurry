@@ -79,3 +79,15 @@ function rgbToHexInt(r: number, g: number, b: number): number {
 export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
+
+
+/**
+ * Generates a random number with a bell curve distribution - Gaussian noise
+ *
+ * @export
+ * @param {number} [scale=1]
+ * @return {*}  {number}
+ */
+export function randBell(scale = 1): number {
+  return (Math.random() + Math.random() + Math.random() - 1.5) * scale;
+}
