@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Object3D, Sprite, Texture, Vector3 } from 'three';
 import { config } from '../config';
 import { smoothstep } from '../utils';
+import { createNoise2D } from 'simplex-noise';
 
 /**
  * Represents a single particle in the particle system.
@@ -11,6 +12,8 @@ import { smoothstep } from '../utils';
 export class Particle {
   private static texture: Texture;
   private static totalParticles = 0;
+  private static noise = createNoise2D();
+
   private sprite: Sprite;
   private velocity: Vector3;
   private index = 0;
@@ -29,7 +32,8 @@ export class Particle {
     });
     
     this.sprite = new THREE.Sprite(spriteMaterial);
-    this.velocity = new Vector3(0, .05, 0);
+    this.sprite.scale.setScalar(.4); // Set scale to make the particle visible
+    this.velocity = new Vector3(0, 0, 0);
     this.container.add(this.sprite);
     this.index = Particle.totalParticles++;
   }
@@ -42,9 +46,13 @@ export class Particle {
   public update() {
     const angle = this.index / 500;
 
-    this.velocity.x = Math.cos(angle) * config.noiseStrength;
-    this.velocity.y = Math.sin(angle) * config.noiseStrength;
-    this.velocity.z = Math.cos(angle) * config.noiseStrength;
+    const noiseStrength = config.noiseStrength;
+    this.velocity.x = Particle.noise(angle, angle) * noiseStrength;
+    this.velocity.y = Particle.noise(angle, angle) * noiseStrength;
+    this.velocity.z = Math.cos(angle) * noiseStrength;
+    // this.velocity.x = Math.cos(angle) * config.noiseStrength;
+    // this.velocity.y = Math.sin(angle) * config.noiseStrength;
+    // this.velocity.z = Math.cos(angle) * config.noiseStrength;
     this.index += 0.00001;
 
     this.sprite.position.addScaledVector(this.velocity, 1); // Scale velocity by deltaTime
@@ -84,7 +92,7 @@ export class Particle {
    * @memberof Particle
    */
   private createParticleTexture(): Texture {
-    const radius = 1;
+    const radius = 10;
     const size = radius * 4;
     const center = size / 2;
 
