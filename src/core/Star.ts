@@ -29,12 +29,10 @@ export class Star {
 
   /**
    * Updates all particles in the Star.
-   *
-   * @param {number} deltaTime
    * @memberof Star
    */
-  update(deltaTime: number) {
-    this.streams.forEach(s => s.update(deltaTime));
+  public update() {
+    this.streams.forEach(s => s.update());
   }
 
 }

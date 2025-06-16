@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Object3D, Sprite, Texture, Vector3 } from 'three';
 import { config } from '../config';
+import { smoothstep } from '../utils';
 
 /**
  * Represents a single particle in the particle system.
@@ -12,9 +13,9 @@ export class Particle {
   private static totalParticles = 0;
   private sprite: Sprite;
   private velocity: Vector3;
-  private age = 0;
-  private lifespan = 100; // frames or ms, depending on your deltaTime
   private index = 0;
+  private age = 0;
+  private lifespan = 100;
 
   constructor(private container: Object3D) {
     if (!Particle.texture)
@@ -53,7 +54,7 @@ export class Particle {
     const color = this.getFlurryColor(ageNormalised);
     this.sprite.material.color.set(color);
 
-    const fade = 1.0 - ageNormalised;
+    const fade = 1.0 - smoothstep(0.6, 1.0, ageNormalised);
     this.sprite.material.opacity = fade;
   }
 
@@ -83,7 +84,7 @@ export class Particle {
    * @memberof Particle
    */
   private createParticleTexture(): Texture {
-    const radius = 5;
+    const radius = 1;
     const size = radius * 4;
     const center = size / 2;
 
@@ -106,7 +107,8 @@ export class Particle {
    * mimicking the Apple "Flurry" screensaver palette.
    */
   private getFlurryColor(t: number): THREE.Color {
-    const hue = (t % 1) * 360;// + (Particle.totalParticles * .03); // hue cycles from 0 to 360
+    // const hue = (t % 1) * 360 + (Particle.totalParticles * .03); // hue cycles from 0 to 360
+    const hue = (t % 1) * 360;
     const saturation = 1.0;
     const lightness = 0.5;
     const color = new THREE.Color();

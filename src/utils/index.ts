@@ -91,3 +91,18 @@ export function clamp(value: number, min: number, max: number): number {
 export function randBell(scale = 1): number {
   return (Math.random() + Math.random() + Math.random() - 1.5) * scale;
 }
+
+/**
+ * Smoothstep function that interpolates between two edges.
+ * https://en.wikipedia.org/wiki/Smoothstep
+ * @export
+ * @param {number} edge0
+ * @param {number} edge1
+ * @param {number} x
+ * @return {*} 
+ */
+export function  smoothstep(edge0: number, edge1: number, x: number) {
+  // Scale, bias and saturate x to 0..1 range
+  let t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+  return t * t * (3 - 2 * t);
+}

@@ -27,10 +27,9 @@ export class Stream {
     /**
      * Updates all particles in the stream.
      *
-     * @param {number} deltaTime
      * @memberof Stream
      */
-    update(deltaTime: number) {
+    public update() {
         const particle = new Particle(this.particlesContainer);
         this.particles.push(particle);
     
@@ -38,7 +37,7 @@ export class Stream {
             particle.update();
 
             if( particle.isDead()) {
-                // Recycle the particle
+                // TODO use object pool instead of creating and destroying particles
                 const index = this.particles.indexOf(particle);
                 if (index > -1) {
                     this.particles.splice(index, 1);
