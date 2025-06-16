@@ -5,6 +5,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader';
 import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurShader';
+import { TemporalBlurPass } from './TemporalBlurPass';
 
 /**
  * Flurry class manages a system of particles, rendering them using PixiJS.
@@ -30,15 +31,20 @@ export class Flurry {
     this.composer = new EffectComposer(this.scene.renderer);
     this.composer.addPass(new RenderPass(this.scene.scene, this.scene.camera));
 
-    const hblur = new ShaderPass(HorizontalBlurShader);
-    this.composer.addPass(hblur);
-    hblur.renderToScreen = true;
+    // const hblur = new ShaderPass(HorizontalBlurShader);
+    // this.composer.addPass(hblur);
+    // hblur.renderToScreen = true;
 
-    const vblur = new ShaderPass(VerticalBlurShader);
-    // set this shader pass to render to screen so we can see the effects
-    vblur.renderToScreen = true;
-    this.composer.addPass(vblur);
-    this.composer.addPass(new ShaderPass(VerticalBlurShader));
+    // const vblur = new ShaderPass(VerticalBlurShader);
+    // // set this shader pass to render to screen so we can see the effects
+    // vblur.renderToScreen = true;
+    // this.composer.addPass(vblur);
+    // this.composer.addPass(new ShaderPass(VerticalBlurShader));
+
+    const temporalBlurPass = new TemporalBlurPass(window.innerWidth, window.innerHeight, 0.95);
+    temporalBlurPass.renderToScreen = true;
+    this.composer.addPass(temporalBlurPass);
+
   }
 
   /**
